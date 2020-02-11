@@ -1,0 +1,195 @@
+<mat-accordion>
+  <mat-expansion-panel [expanded]="false">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{ card.name }}
+        <mat-chip-list>
+          <mat-chip color="primary">{{ card.boardName }}</mat-chip>
+        </mat-chip-list>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="card-content">
+      <div class="card-data">
+        <div class="members-labels">
+          <div class="members">
+            <h5>{{ "members" | translate }}</h5>
+            <div
+              class="members-images"
+              *ngFor="let member of card.members"
+              title="{{ member.fullName }}"
+            >
+              <img
+                *ngIf="member.avatarHash"
+                src="https://trello-avatars.s3.amazonaws.com/{{
+                  member.avatarHash
+                }}/50.png"
+              />
+              <div *ngIf="!member.avatarHash">
+                {{ member.initials }}
+              </div>
+            </div>
+          </div>
+          <div class="labels">
+            <h5>{{ "labels" | translate }}</h5>
+            <mat-chip-list>
+              <mat-chip
+                *ngFor="let label of card.labels"
+                [style.background]="label.color"
+                title="{{ label.name }}"
+              >
+                {{ label.name }}
+              </mat-chip>
+            </mat-chip-list>
+          </div>
+        </div>
+
+        <div class="due-date">
+          <h5>{{ "due-date" | translate }}</h5>
+          {{ card.due | date }}
+        </div>
+
+        <div class="desc">
+          <h5>{{ "desc" | translate }}</h5>
+          <div
+            *ngIf="!cardDescEditable && card.desc"
+            (click)="cardDescEditable = true"
+            [innerText]="card.desc"
+          ></div>
+          <div
+            *ngIf="!cardDescEditable && !card.desc"
+            (click)="cardDescEditable = true"
+          >
+            {{ 'insert-a-desciption' | translate }}
+          </div>
+          <button
+            *ngIf="cardDescEditable"
+            mat-raised-button
+            color="accent"
+            f
+            (click)="changeDesc()"
+          >
+            {{ "save" | translate }}
+          </button>
+          <mat-form-field *ngIf="cardDescEditable">
+            <textarea
+              matInput
+              [(ngModel)]="card.desc"
+              rows="10"
+            ></textarea>
+          </mat-form-field>
+        </div>
+
+        <div class="actions">
+          <mat-accordion>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>{{ "actions" | translate }}</mat-panel-title>
+              </mat-expansion-panel-header>
+              <div class="comment">
+                <mat-form-field>
+                  <input
+                    matInput
+                    placeholder="{{ 'comment' | translate }}"
+                    [(ngModel)]="comment"
+                  />
+                </mat-form-field>
+                <button
+                  mat-raised-button
+                  color="primary"
+                  (click)="sendComment()"
+                >
+                  {{ "send" | translate }}
+                </button>
+              </div>
+              <mat-list>
+                <mat-list-item dense *ngFor="let action of card.actions">
+                  <mat-icon mat-list-icon *ngIf="action.type === 'commentCard'"
+                    >comment</mat-icon
+                  >
+                  <mat-icon mat-list-icon *ngIf="action.type !== 'commentCard'"
+                    >update</mat-icon
+                  >
+                  <h4 mat-line *ngIf="action.type === 'commentCard'">
+                    {{ action.data.text }}
+                  </h4>
+                  <h4 mat-line *ngIf="action.type !== 'commentCard'">
+                    {{ action.type }}
+                  </h4>
+                  <p mat-line>{{ action.memberCreator.fullName }}</p>
+                  <p mat-line>{{ action.date | date: "medium" }}</p>
+                </mat-list-item>
+              </mat-list>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <mat-form-field style="height: 0px; visibility: hidden;">
+          <input
+            matInput
+            [matDatepicker]="picker"
+            (dateChange)="changeDueDate($event)"
+          />
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-action-list dense>
+          <button mat-list-item (click)="picker.open()">
+            <mat-icon mat-list-icon>calendar_today</mat-icon>
+            <p mat-line>{{ "due-date" | translate }}</p>
+          </button>
+
+          <button mat-list-item [matMenuTriggerFor]="menuCardLabels">
+            <mat-icon mat-list-icon>label</mat-icon>
+            <p mat-line>{{ "labels" | translate }}</p>
+          </button>
+
+          <mat-menu #menuCardLabels="matMenu">
+            <div
+              *ngFor="let label of card.labels"
+            >
+              <div class="label-menu">
+                <div [style.background]="label.color"></div>
+                {{ label.name }}
+                <button mat-button (click)="removeLabel(label)">
+                  <mat-icon>restore_from_trash</mat-icon>
+                </button>
+              </div>
+            </div>
+          </mat-menu>
+
+          <button mat-list-item (click)="openTrello(card.url)">
+            <mat-icon mat-list-icon>link</mat-icon>
+            <p mat-line>{{ "open-on-trello" | translate }}</p>
+          </button>
+          <mat-divider></mat-divider>
+          <button mat-list-item [matMenuTriggerFor]="menuCardMove">
+            <mat-icon mat-list-icon>arrow_forward</mat-icon>
+            <p mat-line>{{ "move" | translate }}</p>
+          </button>
+          <mat-menu #menuCardMove="matMenu">
+            <button
+              mat-menu-item
+              *ngFor="let list of lists"
+              (click)="changeList(list.id)"
+            >
+              {{ list.name }}
+            </button>
+          </mat-menu>
+          <button mat-list-item (click)="watch()">
+            <mat-icon mat-list-icon>remove_red_eye</mat-icon>
+            <p mat-line *ngIf="card.subscribed">
+              {{ "dont-watch" | translate }}
+            </p>
+            <p mat-line *ngIf="!card.subscribed">{{ "watch" | translate }}</p>
+          </button>
+          <button mat-list-item (click)="copyTrello(card.url)">
+            <mat-icon mat-list-icon>share</mat-icon>
+            <p mat-line>{{ "share" | translate }}</p>
+          </button>
+        </mat-action-list>
+      </div>
+    </div>
+  </mat-expansion-panel>
+</mat-accordion>

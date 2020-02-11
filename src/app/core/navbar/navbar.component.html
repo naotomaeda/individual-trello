@@ -1,0 +1,44 @@
+<mat-toolbar color="primary">
+    <mat-toolbar-row>
+        <!-- <button mat-icon-button (click)="toogleSidenav()" *ngIf="authenticationService.authorized()">
+            <i class="material-icons" *ngIf="!sidenavService.opened">menu</i>
+            <i class="material-icons" *ngIf="sidenavService.opened">menu_open</i>
+        </button> -->
+        <img class="nav-bar-logo" src="/assets/img/logo.png">
+        <span class="nav-bar-spacer"></span>
+        <button mat-icon-button [matMenuTriggerFor]="languages">
+            <i class="material-icons">language</i>
+        </button>
+        <mat-menu #languages="matMenu">
+            <button (click)="changeLanguage('pt')" mat-icon-button><mat-icon svgIcon="brazil-flag"></mat-icon></button>
+            <button (click)="changeLanguage('es')" mat-icon-button><mat-icon svgIcon="spain-flag"></mat-icon></button>
+            <button (click)="changeLanguage('en')" mat-icon-button><mat-icon svgIcon="usa-flag"></mat-icon></button>
+        </mat-menu>
+        <button mat-icon-button [matMenuTriggerFor]="themes">
+            <i class="material-icons">palette</i>
+        </button>
+        <mat-menu #themes="matMenu">
+            <button
+                *ngFor="let theme of theme.themes"
+                (click)="changeTheme(theme)" mat-menu-item>
+                {{ 'themes.'+theme | translate }}
+            </button>
+        </mat-menu>
+        <div *ngIf="authenticationService.authorized()">
+            <button class="current-member" mat-button [matMenuTriggerFor]="currentMember">
+                {{ trelloService.currentMemberValue.fullName }}
+                <img src="https://trello-avatars.s3.amazonaws.com/{{ trelloService.currentMemberValue.avatarHash }}/50.png">
+            </button>
+            <mat-menu #currentMember="matMenu">
+                <button mat-menu-item>
+                    <mat-icon>mail</mat-icon>
+                    <span>{{ trelloService.currentMemberValue.email }}</span>
+                </button>
+                <button mat-menu-item (click)="logout()">
+                    <mat-icon>exit_to_app</mat-icon>
+                    <span>{{ 'logout' | translate }}</span>
+                </button>
+            </mat-menu>
+        </div>
+    </mat-toolbar-row>
+</mat-toolbar>

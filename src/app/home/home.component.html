@@ -1,0 +1,81 @@
+<mat-sidenav-container>
+    <mat-sidenav
+      #filterSidenav
+      [mode]="layoutService.isMobile ? 'over' : 'side'"
+      opened="{{ layoutService.isMobile ? 'false' : 'true' }}"
+      class="filters"
+    >
+        <div class="filter-title">
+          <h4>{{ 'filter' | translate }}</h4>
+          <button mat-icon-button *ngIf="filterSidenav.opened" (click)="filterSidenav.toggle()">
+            <mat-icon>chevron_left</mat-icon>
+          </button>
+        </div>
+        <div class="filter-content">
+          <mat-accordion>
+            <mat-expansion-panel class="filter-board" [expanded]="true">
+              <mat-expansion-panel-header>
+                <mat-panel-title>{{ 'boards' | translate }}</mat-panel-title>
+              </mat-expansion-panel-header>
+              <div>
+                <mat-form-field>
+                    <input matInput placeholder="{{ 'search-board' | translate }}" [(ngModel)]="filter.boardSearch">
+                </mat-form-field>
+                <button mat-button (click)="filterDeSelectAll('boards', 'select')">{{ 'select-all' | translate }}</button>
+                <button mat-button (click)="filterDeSelectAll('boards', 'deselect')">{{ 'deselect-all' | translate }}</button>
+              </div>
+              <mat-selection-list #boardsFilter (selectionChange)="boardSelection($event)">
+                <mat-list-option
+                    *ngFor="let board of filter.boards | textFilter:{ key: 'name', filterText: filter.boardSearch, mode: 'include' }"
+                    [value]="board.name"
+                    [selected]="board.checked"
+                >
+                    {{ board.name }}
+                </mat-list-option>
+              </mat-selection-list>
+            </mat-expansion-panel>
+            <mat-expansion-panel class="filter-list">
+              <mat-expansion-panel-header>
+                <mat-panel-title>{{ 'lists' | translate }}</mat-panel-title>
+              </mat-expansion-panel-header>
+              <div>
+                <mat-form-field>
+                  <input matInput placeholder="{{ 'search-list' | translate }}" [(ngModel)]="filter.listSearch">
+                </mat-form-field>
+                <button mat-button (click)="filterDeSelectAll('lists', 'select')">{{ 'select-all' | translate }}</button>
+                <button mat-button (click)="filterDeSelectAll('lists', 'deselect')">{{ 'deselect-all' | translate }}</button>
+              </div>
+              <mat-selection-list #listsFilter (selectionChange)="listSelection($event)">
+                <mat-list-option
+                    *ngFor="let list of filter.lists | textFilter:{ key: 'name', filterText: filter.listSearch, mode: 'include' }"
+                    [value]="list.name"
+                    [selected]="list.checked"
+                >
+                    {{ list.name }}
+                </mat-list-option>
+              </mat-selection-list>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </div>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <button mat-button (click)="filterSidenav.toggle()" *ngIf="!filterSidenav.opened">
+        <span *ngIf="layoutService.isMobile">{{ 'filter' | translate }}</span>
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+      <div [style.width]="layoutService.isMobile ? '100%' : 'calc(100% - 24px)'">
+        <mat-accordion [multi]="true">
+            <mat-expansion-panel *ngFor="let list of lists | homeListFilter:filter.lists" [expanded]="list.cards.length > 0">
+                <mat-expansion-panel-header>
+                <mat-panel-title>{{ list.name }}</mat-panel-title>
+                </mat-expansion-panel-header>
+                <app-card-list
+                    *ngFor="let card of list.cards | homeCardBoardFilter:filter.boards"
+                    [card]="card"
+                    (listChange)="listChange($event, card)"
+                ></app-card-list>
+            </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

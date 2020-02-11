@@ -1,0 +1,36 @@
+version: 0.2
+
+env:
+    variables:
+        S3_BUCKET: "apptrello"
+        APP_NAME: "individual-trello"
+        BUILD_ENV : "prod"
+
+
+
+phases:
+    install:
+        commands:
+            - echo Installing source NPM dependencies...
+            - npm install
+            - npm install -g @angular/cli
+            - npm install @angular-devkit/build-angular
+    build:
+        commands:
+            - echo Build started on `date`
+            - ng build --${BUILD_ENV}
+    post_build:
+        commands:
+        # Clear S3 bucket.
+        - aws s3 rm s3://${S3_BUCKET} --recursive
+        - echo S3 bucket is cleared.
+        # Copy dist folder to S3 bucket, As of Angular 6, builds are stored inside an app folder in distribution and not at the root of the dist folder
+        - aws s3 cp dist/${APP_NAME} s3://${S3_BUCKET} --recursive
+        - echo Build completed on `date`
+        #- aws s3 sync dist s3://<S3_BUCKET_HERE>/
+artifacts:
+    files:
+        - '**/*'
+        
+    base-directory: 'dist*'
+    discard-paths: yes

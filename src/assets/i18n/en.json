@@ -1,0 +1,21 @@
+{
+    "app-title": "Initial Project",
+    "app-themes": {
+        "green-blue": "Green Blue",
+        "purple-yellow-dark": "Dark yellow purple"
+    },
+    "app-login": {
+        "username": "User",
+        "password": "Password",
+        "button-login": "Log in",
+        "button-forgot-password": "Forgot your password?"
+    },
+    "app-register": {
+        "name": "Name",
+        "username": "User",
+        "password": "Password",
+        "repeat-password": "Repeat password",
+        "button-register": "Register",
+        "button-back-login": "Back to login"
+    }
+}

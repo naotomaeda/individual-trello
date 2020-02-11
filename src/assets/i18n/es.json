@@ -1,0 +1,21 @@
+{
+    "app-title": "Proyecto inicial",
+    "app-themes": {
+        "green-blue": "Azul verde",
+        "purple-yellow-dark": "Amarillo oscuro púrpura"
+    },
+    "app-login": {
+        "username": "Usuario",
+        "password": "Contraseña",
+        "button-login": "Iniciar sesión",
+        "button-forgot-password": "Olvidaste tu contraseña?"
+    },
+    "app-register": {
+        "name": "Nombre",
+        "username": "Usuario",
+        "password": "Contraseña",
+        "repeat-password": "Repite la contraseña",
+        "button-register": "Registrarse",
+        "button-back-login": "Atrás para iniciar sesión"
+    }
+}

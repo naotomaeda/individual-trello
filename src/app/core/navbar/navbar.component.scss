@@ -1,0 +1,17 @@
+.nav-bar-spacer {
+    flex: 1 1 auto;
+}
+
+.nav-bar-logo {
+    height: calc(100% - 20px);
+    margin-right: 10px;
+}
+
+.current-member {
+    img {
+        width: 25px;
+        height: 25px;
+        border-radius: 100%;
+        margin-left: 5px;
+    }
+}

@@ -1,0 +1,20 @@
+:host {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+
+    .login-card {
+        display: flex;
+        flex-direction: column;
+
+        form {
+            display: flex;
+            flex-direction: column;
+
+            mat-form-field {
+                width: 200px;
+            }
+        }
+    }
+}

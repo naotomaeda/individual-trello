@@ -1,0 +1,39 @@
+# Node.js with Angular
+# Build a Node.js project that uses Angular.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '10.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    npm install -g @angular/cli
+    npm install
+    ng build --prod
+  displayName: 'npm install and build'
+
+- task: Docker@2
+  inputs:
+    containerRegistry: 'k1n0'
+    repository: 'k1n0/individual-trello'
+    command: 'buildAndPush'
+    Dockerfile: '**/Dockerfile'
+    tags: |
+      $(Build.BuildId)
+      latest
+
+
+- task: AzureWebAppContainer@1
+  inputs:
+    azureSubscription: 'Azure for Students Starter (d283f74c-f069-40e8-95b0-6cebd2b89fd5)'
+    appName: 'individual-trello'
+    containers: 'k1n0/individual-trello:$(Build.BuildId)'

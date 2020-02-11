@@ -1,0 +1,21 @@
+:host {
+    height: calc(100% - 64px);
+
+    mat-sidenav-container {
+        height: 100%;
+
+        mat-sidenav {
+            mat-action-list {
+                display: flex;
+                flex-direction: column;
+                min-width: 200px;
+                height: 100%;
+                box-sizing: border-box;
+
+                .space {
+                    flex-grow: 1;
+                }
+            }
+        }
+    }
+}
