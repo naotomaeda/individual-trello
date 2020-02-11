@@ -2,7 +2,7 @@ version: 0.2
 
 env:
     variables:
-        S3_BUCKET: "apptrello"
+        S3_BUCKET: "apptrelloteste"
         APP_NAME: "individual-trello"
         BUILD_ENV : "prod"
 
